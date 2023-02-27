@@ -60,14 +60,15 @@ The data processing and versioning is done using R. The R and Python scripts are
 With crontab, schedule two cronjobs that runs say once a month whereby you could set the download script to run on the 10th day of the month at 10:00am followed by the wrangling/processing script on the same day at 10:20am.  With this in place we have our pipeline set and the data will be updated automatically. 
 
 There's a catch on when to set up your scripts to run, notice, I've mentioned the 10th day, this is due to the fact that some satelite data products are not readily available as in the case of GPM Data (NASA/GPM_L3/IMERG_V06 product) which goes through some processing, this takes time hence the need to give some time allowance. However, this really depends on the product you want to get, do your diligence to research more about it as you'll always get such details in the process.    
-
-For the python script I have set it to run on python3 in a virtual environment, that's why I have not referenced the python executable.  
-
-```
-*/2 * * * * /usr/local/bin/Rscript "/path/to/your/script.R" >> /path/to/munge.txt 2>&1
-*/5 * * * * /path/to/your/gpm_datadownload.py >> /path/to/pylog.txt 2>&1
+ 
 
 ```
+30 11 10 * * /path/to/your/gpm_datadownload.py >> /path/to/pylog.txt 2>&1
+50 11 10 * * /usr/local/bin/Rscript "/path/to/your/script.R" >> /path/to/munge.txt 2>&1  
+
+``
+The python script runs at 11:30am on the 10th day of every month and the R script 20mins later.   
+Note: you could put a shebang line on the R script so that you call it without necessarily referencing the executable.      
 
 ## Logging  
 The following bit of the cronjob creates a log file named munge.txt (for the munge_update.R script) and pylog.txt (for the gpm_datadownload.py script) inside the folder where you've directed it to. With this, we'll be able to check the logs of the scripts afterwards.  
